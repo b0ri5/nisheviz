@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e # Exit on error
+set -o xtrace
+
+gjslint \
+  --strict \
+  --nojsdoc \
+  --exclude_directories node_modules third_party \
+  --recurse . \
+  *.js
+
+jshint *.js

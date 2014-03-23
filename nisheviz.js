@@ -1,4 +1,5 @@
 define([], function() {
+  'use strict';
   function SvgPartitionRenderer(svgDocArg) {
     var svgDoc = svgDocArg;
 

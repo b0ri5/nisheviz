@@ -9,3 +9,5 @@ gjslint \
   --exclude_directories node_modules third_party \
   --recurse . \
   *.js
+
+jshint *.js

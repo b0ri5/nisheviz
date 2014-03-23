@@ -1,9 +1,13 @@
 define([
-  'nisheviz',
   'node_modules/nishe/nishe',
+  'nisheviz',
+
   'node_modules/mocha/mocha',
   'node_modules/should/should',
-  'node_modules/svg.js/dist/svg'], function(nisheviz, nishe) {
+  'node_modules/svg.js/dist/svg'], function(
+    nishe,
+    nisheviz) {
+  'use strict';
   describe('nisheviz', function() {
     describe('SvgPartitionRenderer', function() {
       describe('#render', function() {

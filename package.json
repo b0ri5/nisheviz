@@ -1,0 +1,20 @@
+{
+  "name": "nisheviz",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/b0ri5/nisheviz"
+  },
+  "dependencies": {
+    "nishe": "b0ri5/nishe",
+    "svg.js": "wout/svg.js"
+  },
+  "devDependencies": {
+    "mocha-phantomjs": "*",
+    "mocha": "*",
+    "should": "*"
+  },
+  "scripts": {
+    "test": "lang/js/lint && mocha-phantomjs tests.html"
+  }
+}

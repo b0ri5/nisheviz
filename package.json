@@ -10,10 +10,10 @@
     "svg.js": "wout/svg.js"
   },
   "devDependencies": {
+    "chai": "*",
     "jshint": "*",
     "mocha-phantomjs": "*",
     "mocha": "*",
-    "should": "*",
     "requirejs": "*"
   },
   "scripts": {

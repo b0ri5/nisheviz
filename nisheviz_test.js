@@ -2,7 +2,6 @@ define([
   'node_modules/chai/chai',
   'node_modules/nishe/nishe',
   'nisheviz',
-
   'node_modules/mocha/mocha',
   'node_modules/svg.js/dist/svg'], function(
     chai,
@@ -11,6 +10,14 @@ define([
   'use strict';
   var expect = chai.expect;
   describe('nisheviz', function() {
+    describe('next', function() {
+      var state = {
+        elements: ['a', 'b', 'c'],
+        cell_indexes: [],
+        state: 
+      };
+      var nisheviz.next(state);
+    });
     describe('SvgPartitionRenderer', function() {
       describe('#render', function() {
         it('gives wider partitions wider bboxes', function() {

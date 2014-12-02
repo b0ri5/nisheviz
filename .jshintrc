@@ -30,7 +30,8 @@
   "nonew": true,
   "quotmark": "single",
   "undef": true,
-  "unused": true,
+  // Disable this because it is currently unhelpful
+  // "unused": true, 
   "strict": true,
   "trailing": true
 }

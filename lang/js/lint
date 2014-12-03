@@ -4,6 +4,7 @@ set -e # Exit on error
 set -o xtrace
 
 gjslint \
+  --max_line_length 200 \
   --strict \
   --nojsdoc \
   --exclude_directories node_modules third_party \

@@ -30,12 +30,27 @@ define([], function() {
     return keys.indexOf('activeIndexes') != -1 && keys.indexOf('activeIndex') == -1;
   };
 
+  var isChosenActiveIndex = function(state) {
+    var keys = Object.keys(state);
+    return keys.indexOf('activeIndex') != -1 && keys.indexOf('activeIndexIndex') == -1;
+  };
+
+  var isAccumulateAdjacentCells = function(state) {
+    return Object.keys(state).indexOf('activeIndexIndex') != -1;
+  };
+
   var next = function(state) {
     if (isRefineStart(state)) {
       return nextRefineStart(state);
     }
     if (isChooseActiveIndex(state)) {
       return nextChooseActiveIndex(state);
+    }
+    if (isChosenActiveIndex(state)) {
+      return nextChosenActiveIndex(state);
+    }
+    if (isAccumulateAdjacentCells(state)) {
+      return nextAccumulateAdjacentCells(state);
     }
   };
 
@@ -65,6 +80,36 @@ define([], function() {
       partition: state.partition,
       activeIndexes: activeIndexes,
       activeIndex: smallestActiveIndex
+    };
+  };
+
+  var nextChosenActiveIndex = function(state) {
+    return {
+      partition: state.partition,
+      activeIndexes: state.activeIndexes,
+      activeIndex: state.activeIndex,
+      activeIndexIndex: 0
+    };
+  };
+
+  var nextAccumulateAdjacentCells = function(state) {
+    var nbhdIndex = state.nbhdIndex + 1 || 0;
+    var adjacencyCounts = state.adjacencyCounts || {};
+    var u = state.partition.cell(state.activeIndex)[state.activeIndexIndex];
+    var v = state.graph.nbhd(u)[nbhdIndex];
+    if (v in adjacencyCounts) {
+      adjacencyCounts[v]++;
+    } else {
+      adjacencyCounts[v] = 1;
+    }
+    return {
+      graph: state.graph,
+      partition: state.partition,
+      activeIndexes: state.activeIndexes,
+      activeIndex: state.activeIndex,
+      activeIndexIndex: state.activeIndexIndex,
+      nbhdIndex: nbhdIndex,
+      adjacencyCounts: adjacencyCounts
     };
   };
 

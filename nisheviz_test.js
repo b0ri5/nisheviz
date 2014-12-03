@@ -61,6 +61,20 @@ define([
           expect(next.activeIndexes).to.have.members([0]);
         });
       });
+      describe('from accumulate adjacent cells', function() {
+        it('should add nbhd index and adjacency counts', function() {
+          var state = {
+            graph: new nishe.Graph({a: ['b']}),
+            partition: new nishe.Partition([['a', 'b']]),
+            activeIndexes: [],
+            activeIndex: 0,
+            activeIndexIndex: 0
+          };
+          var next = nisheviz.next(state);
+          expect(next.nbhdIndex).to.equal(0);
+          expect(next.adjacencyCounts.b).to.equal(1);
+        });
+      });
     });
     describe('isChooseActiveIndex', function() {
       it('returns true if there are active indexes but no active index', function() {

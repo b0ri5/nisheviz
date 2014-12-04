@@ -96,21 +96,31 @@ define([], function() {
     var nbhdIndex = state.nbhdIndex + 1 || 0;
     var adjacencyCounts = state.adjacencyCounts || {};
     var u = state.partition.cell(state.activeIndex)[state.activeIndexIndex];
-    var v = state.graph.nbhd(u)[nbhdIndex];
-    if (v in adjacencyCounts) {
-      adjacencyCounts[v]++;
-    } else {
-      adjacencyCounts[v] = 1;
-    }
-    return {
+    var nbhd = state.graph.nbhd(u);
+    var nextState = {
       graph: state.graph,
       partition: state.partition,
       activeIndexes: state.activeIndexes,
       activeIndex: state.activeIndex,
       activeIndexIndex: state.activeIndexIndex,
-      nbhdIndex: nbhdIndex,
       adjacencyCounts: adjacencyCounts
     };
+    if (nbhdIndex == nbhd.length) {
+      nextState.nbhdIndex = undefined;
+      nextState.activeIndexIndex++;
+      if (nextState.activeIndexIndex == state.partition.indexSize(state.activeIndex)) {
+        nextState.activeIndexIndex = undefined;
+      }
+      return nextState;
+    }
+    var v = nbhd[nbhdIndex];
+    if (v in adjacencyCounts) {
+      adjacencyCounts[v]++;
+    } else {
+      adjacencyCounts[v] = 1;
+    }
+    nextState.nbhdIndex = nbhdIndex;
+    return nextState;
   };
 
   return {

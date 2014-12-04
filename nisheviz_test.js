@@ -66,13 +66,53 @@ define([
           var state = {
             graph: new nishe.Graph({a: ['b']}),
             partition: new nishe.Partition([['a', 'b']]),
-            activeIndexes: [],
             activeIndex: 0,
             activeIndexIndex: 0
           };
           var next = nisheviz.next(state);
           expect(next.nbhdIndex).to.equal(0);
           expect(next.adjacencyCounts.b).to.equal(1);
+        });
+        it('should continue previous state', function() {
+          var state = {
+            graph: new nishe.Graph({a: ['b', 'c']}),
+            partition: new nishe.Partition([['a', 'b', 'c']]),
+            activeIndex: 0,
+            activeIndexIndex: 0,
+            nbhdIndex: 0,
+            adjacencyCounts: {
+              c: 41
+            }
+          };
+          var next = nisheviz.next(state);
+          expect(next.nbhdIndex).to.equal(1);
+          expect(next.adjacencyCounts.c).to.equal(42);
+        });
+        it('should increment the active index\'s index when the nbhd index is exhausted', function() {
+          var state = {
+            graph: new nishe.Graph({a: ['b', 'c']}),
+            partition: new nishe.Partition([['a', 'b', 'c']]),
+            activeIndex: 0,
+            activeIndexIndex: 0,
+            nbhdIndex: 1
+          };
+          var next = nisheviz.next(state);
+          expect(next.nbhdIndex).to.equal(undefined);
+          expect(next.activeIndexIndex).to.equal(1);
+        });
+        it('should remove the active index\'s index when the cell is exhausted', function() {
+          var state = {
+            graph: new nishe.Graph({a: ['b', 'c']}),
+            partition: new nishe.Partition([['a', 'b', 'c']]),
+            activeIndex: 0,
+            activeIndexIndex: 2,
+            nbhdIndex: 0,
+            adjacencyCounts: {}
+          };
+          var next = nisheviz.next(state);
+          expect(next.nbhdIndex).to.equal(undefined);
+          expect(next.activeIndexIndex).to.equal(undefined);
+          expect(next.adjacencyCounts).to.not.equal(undefined);
         });
       });
     });

@@ -39,6 +39,13 @@ define([], function() {
     return Object.keys(state).indexOf('activeIndexIndex') != -1;
   };
 
+  var isSortAndSplit = function(state) {
+    var keys = Object.keys(state);
+    return keys.indexOf('nbhdIndex') == -1 &&
+           keys.indexOf('activeIndexIndex') == -1 &&
+           keys.indexOf('adjacencyCounts') != -1;
+  };
+
   var next = function(state) {
     if (isRefineStart(state)) {
       return nextRefineStart(state);
@@ -51,6 +58,9 @@ define([], function() {
     }
     if (isAccumulateAdjacentCells(state)) {
       return nextAccumulateAdjacentCells(state);
+    }
+    if (isSortAndSplit(state)) {
+      return nextSortAndSplit(state);
     }
   };
 
@@ -121,6 +131,10 @@ define([], function() {
     }
     nextState.nbhdIndex = nbhdIndex;
     return nextState;
+  };
+
+  var nextSortAndSplit = function(state) {
+    // TODO: Implement.
   };
 
   return {

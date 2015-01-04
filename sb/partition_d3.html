@@ -1,0 +1,73 @@
+<!-- An attempt to get a partition rendered in d3js -->
+<body>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<style>
+  rect.outter {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+  }
+  line {
+    stroke: black;
+  }
+  svg.block {
+    fill: none;
+  }
+  text.block {
+    dominant-baseline: central;
+    fill: black;
+  }
+</style>
+<svg id="svg-id" width="500" height="500">
+</svg>
+<script>
+  var SVG_NS = "http://www.w3.org/2000/svg";
+
+  // a | b c | d
+  var elements = ['a', 'b', 'c', 'd'];
+  var indexes = [1, 3];
+  // Calculate the block width and height
+  d3.select('#svg-id')
+    .append('defs').selectAll('text')
+        .data(elements)
+      .enter().append('text')
+        .text(function(d) { return d; });
+
+  var blockWidth = 0;
+  var blockHeight = 0;
+  d3.selectAll('defs text')
+    .each(function(d) {
+      var bbox = this.getBBox();
+      blockWidth = Math.max(blockWidth, bbox.width);
+      blockHeight = Math.max(blockHeight, bbox.height);
+    });
+  console.log(blockWidth, blockHeight);
+
+  var g = d3.select('#svg-id')
+    .append('g')
+    .attr('transform', 'translate(100,100)');
+
+  // Draw the blocks box
+  g.append('rect')
+    .attr('x', 0)
+    .attr('y', 0)
+    .attr('width', blockWidth * elements.length)
+    .attr('height', blockHeight)
+    .classed('outter', true);
+
+  // Draw the lines
+  g.selectAll('line')
+      .data(indexes)
+    .enter().append('line')
+      .attr('y1', 0)
+      .attr('y2', blockHeight)
+      .attr('x1', function(d) {
+        return blockWidth * d;
+      })
+      .attr('x2', function(d) {
+        return blockWidth * d;
+      })
+
+  // Draw the elements
+</script>
+</body>

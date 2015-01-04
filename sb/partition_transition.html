@@ -86,5 +86,26 @@
           .attr('x', '50%')
           .attr('y', '50%')
           .classed('block', true);
+
+  // Do some transitioning
+  var newElements = ['a', 'c', 'b', 'd'];
+  var newIndexes = [2];
+
+  // Fade out the lines
+  var lineselect = g.selectAll('line')
+      .data(newIndexes, function(d) { return d; });
+  lineselect.enter().append('line')
+    .attr('y1', 0)
+    .attr('y2', blockHeight)
+    .attr('x1', function(d) {
+      return blockWidth * d;
+    })
+    .attr('x2', function(d) {
+      return blockWidth * d;
+    });
+  lineselect.exit()
+    .remove();
+
+  // Swap the elements
 </script>
 </body>

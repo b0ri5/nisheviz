@@ -1,0 +1,74 @@
+<!-- An attempt to get a partition rendered with some help from javascript -->
+<body>
+<style>
+  rect.outter {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+  }
+  line {
+    stroke: black;
+  }
+  svg.block {
+    fill: none;
+  }
+  text.block {
+    dominant-baseline: central;
+    fill: black;
+  }
+</style>
+<svg id="svg-id" width="500" height="500">
+  <defs>
+    <text id="defs-1">1</text>
+    <text id="defs-10">10</text>
+  </defs>
+</svg>
+<script>
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  var svg = document.getElementById("svg-id");
+  console.log(svg);
+  console.dir(svg);
+  var defs1 = document.getElementById("defs-1");
+  var defs10 = document.getElementById("defs-10");
+  console.dir(defs1);
+  console.dir(defs10);
+  console.log(defs1.getComputedTextLength());
+  console.log(defs10.getComputedTextLength());
+  console.log(defs1.getBBox());
+  var g = document.createElementNS(SVG_NS, 'g');
+  g.setAttributeNS(null, 'transform', 'translate(100,100)');
+  var width = defs10.getBBox().width * 1.618;
+  var height = defs10.getBBox().height * 1.618;
+  console.log(width, height);
+  var outterRect = document.createElementNS(SVG_NS, 'rect');
+  outterRect.setAttributeNS(null, 'x', 0);
+  outterRect.setAttributeNS(null, 'y', 0);
+  outterRect.setAttributeNS(null, 'width', width * 2);
+  outterRect.setAttributeNS(null, 'height', height);
+  outterRect.setAttributeNS(null, 'class', 'outter');
+  g.appendChild(outterRect);
+  var split = document.createElementNS(SVG_NS, 'line');
+  split.setAttributeNS(null, 'x1', width);
+  split.setAttributeNS(null, 'x2', width);
+  split.setAttributeNS(null, 'y1', 0);
+  split.setAttributeNS(null, 'y2', height);
+  g.appendChild(split);
+
+  var svg1 = document.createElementNS(SVG_NS, 'svg');
+  svg1.setAttributeNS(null, 'x', 0);
+  svg1.setAttributeNS(null, 'y', 0);
+  svg1.setAttributeNS(null, 'width', width);
+  svg1.setAttributeNS(null, 'height', height);
+  svg1.setAttributeNS(null, 'class', "block");
+  var text1 = document.createElementNS(SVG_NS, 'text');
+  text1.setAttributeNS(null, 'x', "50%");
+  text1.setAttributeNS(null, 'y', "50%");
+  text1.setAttributeNS(null, "text-anchor", "middle");
+  text1.setAttributeNS(null, "class", "block");
+  text1.innerHTML = "1";
+  svg1.appendChild(text1);
+  g.appendChild(svg1);
+
+  svg.appendChild(g);
+</script>
+</body>

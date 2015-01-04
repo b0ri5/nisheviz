@@ -91,7 +91,7 @@
   var newElements = ['a', 'c', 'b', 'd'];
   var newIndexes = [2];
 
-  // Fade out the lines
+  // Fade in and out the lines
   var lineselect = g.selectAll('line')
       .data(newIndexes, function(d) { return d; });
   lineselect.enter().append('line')
@@ -102,9 +102,18 @@
     })
     .attr('x2', function(d) {
       return blockWidth * d;
-    });
+    })
+    .style('opacity', 0)
+    .transition()
+    .duration(1000)
+    .style('opacity', 1);
   lineselect.exit()
-    .remove();
+    .transition()
+    .duration(1000)
+    .style('opacity', 0)
+    .each("end", function() {
+      d3.select(this).remove();
+    });
 
   // Swap the elements
 </script>

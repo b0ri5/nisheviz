@@ -42,6 +42,8 @@
       blockHeight = Math.max(blockHeight, bbox.height);
     });
   console.log(blockWidth, blockHeight);
+  blockWidth *= 1.818;
+  blockHeight *= 1.1;
 
   var g = d3.select('#svg-id')
     .append('g')
@@ -69,5 +71,20 @@
       })
 
   // Draw the elements
+  g.selectAll('svg')
+      .data(elements)
+    .enter().append('svg')
+      .attr('x', function(d, i) {
+        return blockWidth * i;
+      })
+      .attr('y', 0)
+      .attr('width', blockWidth)
+      .attr('height', blockHeight)
+      .classed('block', true).append('text')
+          .text(function(d) { return d; })
+          .attr('text-anchor', 'middle')
+          .attr('x', '50%')
+          .attr('y', '50%')
+          .classed('block', true);
 </script>
 </body>

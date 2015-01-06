@@ -71,11 +71,19 @@
       });
 
   // Draw the elements
+  var vertexes = elements.slice(0);
+  vertexes.sort();
+  var positions = {
+    a: 0,
+    b: 1,
+    c: 2,
+    d: 3
+  }
   g.selectAll('svg')
-      .data(elements)
+      .data(vertexes)
     .enter().append('svg')
-      .attr('x', function(d, i) {
-        return blockWidth * i;
+      .attr('x', function(d) {
+        return blockWidth * positions[d];
       })
       .attr('y', 0)
       .attr('width', blockWidth)
@@ -115,6 +123,19 @@
       d3.select(this).remove();
     });
 
-  // Swap the elements
+  // Swap the changed elements
+  var newPositions = {
+    a: 0,
+    b: 2,
+    c: 1,
+    d: 3
+  }
+  g.selectAll('svg')
+    .transition()
+    .duration(1000)
+    .attr('x', function(d) {
+      return blockWidth * newPositions[d];
+    });
+
 </script>
 </body>

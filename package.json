@@ -10,7 +10,6 @@
   },
   "devDependencies": {
     "chai": "*",
-    "jquery": "*",
     "jshint": "*",
     "mocha-phantomjs": "*",
     "mocha": "*",

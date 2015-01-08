@@ -1,7 +1,6 @@
 require.config({
   paths: {
     'chai': 'node_modules/chai/chai',
-    'jquery': 'node_modules/jquery/dist/jquery',
     'mocha': 'node_modules/mocha/mocha',
     'nishe': 'node_modules/nishe/nishe'
   },
@@ -13,12 +12,6 @@ require.config({
         return this.mocha;
       }
     }
-  },
-  // Set up jquery as recommended here:
-  //   http://requirejs.org/docs/jquery.html#noconflictmap
-  map: {
-    '*': { 'jquery': 'jquery-private' },
-    'jquery-private': { 'jquery': 'jquery' }
   }
 });
 require(['mocha'], function() {

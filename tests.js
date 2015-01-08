@@ -3,8 +3,7 @@ require.config({
     'chai': 'node_modules/chai/chai',
     'jquery': 'node_modules/jquery/dist/jquery',
     'mocha': 'node_modules/mocha/mocha',
-    'nishe': 'node_modules/nishe/nishe',
-    'svgjs': 'node_modules/svg.js/dist/svg'
+    'nishe': 'node_modules/nishe/nishe'
   },
   shim: {
     'mocha': {

@@ -137,9 +137,55 @@ define([], function() {
     // TODO: Implement.
   };
 
+  var elementsDimensions = {};
+
+  var populateUnseenDimensions = function(arr, group) {
+    var unseen = [];
+    for (var i = 0 ; i < arr.length; i++) {
+      var e = arr[i];
+      if (!elementDimensions[e]) {
+        unseen.push(e);
+      }
+    }
+    var texts = group.append('defs')
+      .attr('id', 'dimensions')
+      .selectAll('text')
+        .data(unseen)
+      .enter().append('text')
+        .text(function(d) { return d; });
+
+    texts.each(function (d) {
+      var bbox = this.getBBox();
+      elementDimensions[d] = {width: bbox.width, height: bbox.height};
+    });
+
+    //group.select('#dimensions')
+    //  .remove();
+  };
+
+  var renderPartition = function(p, group) {
+
+  };
+
+  function RenderedPartition(elements, indexes) {
+    this.elemets = elements;
+    this.indexes = indexes;
+
+
+
+    this.blockHeight = function() {
+
+    };
+
+    this.blockWidth = function() {
+
+    };
+  }
+
   return {
     isChooseActiveIndex: isChooseActiveIndex,
     isRefineStart: isRefineStart,
-    next: next
+    next: next,
+    renderPartition: renderPartition
   };
 });

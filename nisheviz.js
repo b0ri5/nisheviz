@@ -137,12 +137,13 @@ define([], function() {
     // TODO: Implement.
   };
 
-  var elementsDimensions = {};
+  // A map from string to width,height objects
+  var elementDimensions = {};
 
-  var populateUnseenDimensions = function(arr, group) {
+  var populateUnseenDimensions = function(elements, group) {
     var unseen = [];
-    for (var i = 0 ; i < arr.length; i++) {
-      var e = arr[i];
+    for (var i = 0 ; i < elements.length; i++) {
+      var e = elements[i];
       if (!elementDimensions[e]) {
         unseen.push(e);
       }
@@ -168,17 +169,26 @@ define([], function() {
   };
 
   function RenderedPartition(elements, indexes) {
-    this.elemets = elements;
-    this.indexes = indexes;
+    var elements = elements;
+    var indexes = indexes;
+    var maxBlockHeight = 0;
+    var maxBlockWidth = 0;
 
+    populateUnseenDimensions(elements);
 
+    for (var i = 0; i < elements.length; i++) {
+      var e = elements[i];
+      var dims = elementDimensions[e];
+      maxBlockWidth = Math.max(dims.width, maxBlockWidth);
+      maxBlockHeight = Math.max(dims.height, maxBlockHeight);
+    }
 
     this.blockHeight = function() {
-
+      return maxBlockHeight;
     };
 
     this.blockWidth = function() {
-
+      return maxBlockWidth;
     };
   }
 

@@ -165,12 +165,69 @@ define([], function() {
   };
 
   var renderPartition = function(p, group) {
+    var elements = p.domain();
+    var indexes = p.indexes();
 
+    var blockHeight = 0;
+    var blockWidth = 0;
+
+    populateUnseenDimensions(elements);
+
+    for (var i = 0; i < elements.length; i++) {
+      var e = elements[i];
+      var dims = elementDimensions[e];
+      blockWidth = Math.max(dims.width, blockWidth);
+      blockHeight = Math.max(dims.height, blockHeight);
+    }
+
+    group.append('rect')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', blockWidth * elements.length)
+        .attr('height', blockHeight)
+        .classed('outter', true);
+
+    group.selectAll('line')
+        .data(indexes)
+      .enter().append('line')
+        .attr('y1', 0)
+        .attr('y2', blockHeight)
+        .attr('x1', function(d) {
+          return blockWidth * d;
+        })
+        .attr('x2', function(d) {
+          return blockWidth * d;
+        });
+
+
+    var positions = {
+      a: 0,
+      b: 1,
+      c: 2,
+      d: 3
+    }
+    g.selectAll('svg')
+        .data(vertexes)
+      .enter().append('svg')
+        .attr('x', function(d) {
+          return blockWidth * positions[d];
+        })
+        .attr('y', 0)
+        .attr('width', blockWidth)
+        .attr('height', blockHeight)
+        .classed('block', true).append('text')
+            .text(function(d) { return d; })
+            .attr('text-anchor', 'middle')
+            .attr('x', '50%')
+            .attr('y', '50%')
+            .classed('block', true);
+
+
+    var rendered = new RenderedPartition(elements, indexes);
+    return rendered;
   };
 
   function RenderedPartition(elements, indexes) {
-    var elements = elements;
-    var indexes = indexes;
     var maxBlockHeight = 0;
     var maxBlockWidth = 0;
 

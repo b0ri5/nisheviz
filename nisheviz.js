@@ -171,14 +171,15 @@ define([], function() {
     var blockHeight = 0;
     var blockWidth = 0;
 
-    populateUnseenDimensions(elements);
-
-    for (var i = 0; i < elements.length; i++) {
-      var e = elements[i];
-      var dims = elementDimensions[e];
-      blockWidth = Math.max(dims.width, blockWidth);
-      blockHeight = Math.max(dims.height, blockHeight);
-    }
+    (function() {
+      populateUnseenDimensions(elements);
+      for (var i = 0; i < elements.length; i++) {
+        var e = elements[i];
+        var dims = elementDimensions[e];
+        blockWidth = Math.max(dims.width, blockWidth);
+        blockHeight = Math.max(dims.height, blockHeight);
+      }
+    })();
 
     group.append('rect')
         .attr('x', 0)
@@ -199,15 +200,23 @@ define([], function() {
           return blockWidth * d;
         });
 
+    var positions = {};
 
-    var positions = {
-      a: 0,
-      b: 1,
-      c: 2,
-      d: 3
-    }
+    (function() {
+      var pos = 0;
+      var cells = p.cells();
+      for (var i = 0; i < cells.length; i++) {
+        var cell = cells[i];
+        for (var j = 0; j < cell.length; j++) {
+          var e = cell[j];
+          positions[e] = pos;
+          pos++;
+        }
+      }
+    })();
+
     g.selectAll('svg')
-        .data(vertexes)
+        .data(elements)
       .enter().append('svg')
         .attr('x', function(d) {
           return blockWidth * positions[d];
@@ -222,31 +231,11 @@ define([], function() {
             .attr('y', '50%')
             .classed('block', true);
 
-
     var rendered = new RenderedPartition(elements, indexes);
     return rendered;
   };
 
   function RenderedPartition(elements, indexes) {
-    var maxBlockHeight = 0;
-    var maxBlockWidth = 0;
-
-    populateUnseenDimensions(elements);
-
-    for (var i = 0; i < elements.length; i++) {
-      var e = elements[i];
-      var dims = elementDimensions[e];
-      maxBlockWidth = Math.max(dims.width, maxBlockWidth);
-      maxBlockHeight = Math.max(dims.height, maxBlockHeight);
-    }
-
-    this.blockHeight = function() {
-      return maxBlockHeight;
-    };
-
-    this.blockWidth = function() {
-      return maxBlockWidth;
-    };
   }
 
   return {

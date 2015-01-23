@@ -1,6 +1,6 @@
 <!-- An attempt to get a partition rendered in d3js -->
 <body>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="../node_modules/d3/d3.js" charset="utf-8"></script>
 <style>
   rect.outter {
     fill: none;
@@ -48,6 +48,7 @@
   var g = d3.select('#svg-id')
     .append('g')
     .attr('transform', 'translate(100,100)');
+  console.log(g);
 
   // Draw the blocks box
   g.append('rect')

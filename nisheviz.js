@@ -140,7 +140,7 @@ define([], function() {
   // A map from string to width,height objects
   var elementDimensions = {};
 
-  var populateUnseenDimensions = function(elements, group) {
+  var populateUnseenDimensions = function(elements, svg) {
     var unseen = [];
     for (var i = 0 ; i < elements.length; i++) {
       var e = elements[i];
@@ -148,7 +148,7 @@ define([], function() {
         unseen.push(e);
       }
     }
-    var texts = group.append('defs')
+    var texts = svg.append('defs')
       .attr('id', 'dimensions')
       .selectAll('text')
         .data(unseen)
@@ -164,22 +164,23 @@ define([], function() {
     //  .remove();
   };
 
-  var renderPartition = function(p, group) {
+  var partitionBlockDimensions = function(elements, svg) {
+    var blockWidth = 0;
+    var blockHeight = 0;
+    console.log(elements);
+    populateUnseenDimensions(elements, svg);
+    for (var i = 0; i < elements.length; i++) {
+      var e = elements[i];
+      var dims = elementDimensions[e];
+      blockWidth = Math.max(dims.width, blockWidth);
+      blockHeight = Math.max(dims.height, blockHeight);
+    }
+    return {width: blockWidth, height: blockHeight};
+  };
+
+  var renderPartition = function(p, blockWidth, blockHeight, group) {
     var elements = p.domain();
     var indexes = p.indexes();
-
-    var blockHeight = 0;
-    var blockWidth = 0;
-
-    (function() {
-      populateUnseenDimensions(elements);
-      for (var i = 0; i < elements.length; i++) {
-        var e = elements[i];
-        var dims = elementDimensions[e];
-        blockWidth = Math.max(dims.width, blockWidth);
-        blockHeight = Math.max(dims.height, blockHeight);
-      }
-    })();
 
     group.append('rect')
         .attr('x', 0)
@@ -215,7 +216,7 @@ define([], function() {
       }
     })();
 
-    g.selectAll('svg')
+    group.selectAll('svg')
         .data(elements)
       .enter().append('svg')
         .attr('x', function(d) {
@@ -242,6 +243,7 @@ define([], function() {
     isChooseActiveIndex: isChooseActiveIndex,
     isRefineStart: isRefineStart,
     next: next,
-    renderPartition: renderPartition
+    renderPartition: renderPartition,
+    partitionBlockDimensions: partitionBlockDimensions
   };
 });

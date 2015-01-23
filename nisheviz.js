@@ -175,7 +175,7 @@ define([], function() {
       blockWidth = Math.max(dims.width, blockWidth);
       blockHeight = Math.max(dims.height, blockHeight);
     }
-    return {width: blockWidth, height: blockHeight};
+    return {width: blockWidth * 1.818, height: blockHeight * 1.1};
   };
 
   var renderPartition = function(p, blockWidth, blockHeight, group) {
@@ -187,19 +187,23 @@ define([], function() {
         .attr('y', 0)
         .attr('width', blockWidth * elements.length)
         .attr('height', blockHeight)
-        .classed('outter', true);
+        .style({
+          fill: 'none',
+          stroke: 'black',
+          'stroke-width': 1
+        });
 
+    var multiplyByBlockWidth = function(d) {
+      return blockWidth * d;
+    };
     group.selectAll('line')
         .data(indexes)
       .enter().append('line')
         .attr('y1', 0)
         .attr('y2', blockHeight)
-        .attr('x1', function(d) {
-          return blockWidth * d;
-        })
-        .attr('x2', function(d) {
-          return blockWidth * d;
-        });
+        .attr('x1', multiplyByBlockWidth)
+        .attr('x2', multiplyByBlockWidth)
+        .style('stroke', 'black');
 
     var positions = {};
 
@@ -225,12 +229,12 @@ define([], function() {
         .attr('y', 0)
         .attr('width', blockWidth)
         .attr('height', blockHeight)
-        .classed('block', true).append('text')
+        .append('text')
             .text(function(d) { return d; })
             .attr('text-anchor', 'middle')
             .attr('x', '50%')
             .attr('y', '50%')
-            .classed('block', true);
+            .style('dominant-baseline', 'central');
 
     var rendered = new RenderedPartition(elements, indexes);
     return rendered;

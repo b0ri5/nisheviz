@@ -6,6 +6,7 @@
     "url": "https://github.com/b0ri5/nisheviz"
   },
   "dependencies": {
+    "d3": "latest",
     "nishe": "b0ri5/nishe"
   },
   "devDependencies": {

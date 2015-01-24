@@ -12,5 +12,6 @@ require(['d3', 'nishe', 'nisheviz'], function(d3, nishe, nisheviz) {
   var p = new nishe.Partition([['a', 'b'], ['c']]);
   console.log(group);
   var dims = nisheviz.partitionBlockDimensions(p.domain(), svg);
-  nisheviz.renderPartition(p, dims.width, dims.height, group);
+  var rendered = nisheviz.renderPartition(p, dims.width, dims.height, group);
+  rendered.transitionToPartition(['c', 'b', 'a'], [1]);
 });

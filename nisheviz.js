@@ -178,6 +178,19 @@ define([], function() {
     return {width: blockWidth * 1.818, height: blockHeight * 1.1};
   };
 
+  var appendLine = function(enter, blockWidth, blockHeight) {
+    var multiplyByBlockWidth = function(d) {
+      return blockWidth * d;
+    };
+    return enter.append('line')
+        .attr('y1', 0)
+        .attr('y2', blockHeight)
+        .attr('x1', multiplyByBlockWidth)
+        .attr('x2', multiplyByBlockWidth)
+        .style('stroke', 'black')
+        .classed('cellseparator', true);
+  };
+
   var renderPartition = function(p, blockWidth, blockHeight, group) {
     var elements = p.domain();
     var indexes = p.indexes();
@@ -193,17 +206,8 @@ define([], function() {
           'stroke-width': 1
         });
 
-    var multiplyByBlockWidth = function(d) {
-      return blockWidth * d;
-    };
-    group.selectAll('line')
-        .data(indexes)
-      .enter().append('line')
-        .attr('y1', 0)
-        .attr('y2', blockHeight)
-        .attr('x1', multiplyByBlockWidth)
-        .attr('x2', multiplyByBlockWidth)
-        .style('stroke', 'black');
+    var lineselect = group.selectAll('line');
+    appendLine(lineselect.data(indexes).enter(), blockWidth, blockHeight);
 
     var positions = {};
 
@@ -220,8 +224,8 @@ define([], function() {
       }
     })();
 
-    group.selectAll('svg')
-        .data(elements)
+    var elementsselect = group.selectAll('svg');
+    elementsselect.data(elements)
       .enter().append('svg')
         .attr('x', function(d) {
           return blockWidth * positions[d];
@@ -229,6 +233,7 @@ define([], function() {
         .attr('y', 0)
         .attr('width', blockWidth)
         .attr('height', blockHeight)
+        .classed('elementholder', true)
         .append('text')
             .text(function(d) { return d; })
             .attr('text-anchor', 'middle')
@@ -236,11 +241,39 @@ define([], function() {
             .attr('y', '50%')
             .style('dominant-baseline', 'central');
 
-    var rendered = new RenderedPartition(elements, indexes);
-    return rendered;
+    return new RenderedPartition(group, blockWidth, blockHeight);
   };
 
-  function RenderedPartition(elements, indexes) {
+  function RenderedPartition(group, blockWidth, blockHeight) {
+    
+    this.transitionToPartition = function(newElements, newIndexes) {
+      var lineselect = group.selectAll('line.cellseparator')
+        .data(newIndexes, function(d) { return d; });
+      appendLine(lineselect.enter(), blockWidth, blockHeight)
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .style('opacity', 1);
+      lineselect.exit()
+        .transition()
+        .duration(1000)
+        .style('opacity', 0)
+        .each("end", function() {
+          d3.select(this).remove();
+        });
+        
+      var newPositions = {};
+      for (var i = 0; i < newElements.length; i++) {
+        var e = newElements[i];
+        newPositions[e] = i;
+      }
+      group.selectAll('.elementholder')
+        .transition()
+        .duration(1000)
+        .attr('x', function(d) {
+          return blockWidth * newPositions[d];
+        });
+    }
   }
 
   return {

@@ -149,7 +149,7 @@ define([], function() {
       }
     }
     var texts = svg.append('defs')
-      .attr('id', 'dimensions')
+      .classed('dimensions-to-remove', true)
       .selectAll('text')
         .data(unseen)
       .enter().append('text')
@@ -160,8 +160,8 @@ define([], function() {
       elementDimensions[d] = {width: bbox.width, height: bbox.height};
     });
 
-    //group.select('#dimensions')
-    //  .remove();
+    svg.select('.dimensions-to-remove')
+      .remove();
   };
 
   var partitionBlockDimensions = function(elements, svg) {

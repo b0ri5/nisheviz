@@ -191,6 +191,27 @@ define([], function() {
         .classed('cellseparator', true);
   };
 
+  function PartitionRenderer(blockWidth, blockHeight) {
+    this.appendLine = function(enter) {
+      var multiplyByBlockWidth = function(d) {
+        return blockWidth * d;
+      };
+      return enter.append('line')
+          .attr('y1', 0)
+          .attr('y2', blockHeight)
+          .attr('x1', multiplyByBlockWidth)
+          .attr('x2', multiplyByBlockWidth)
+          .style('stroke', 'black')
+          .classed('cellseparator', true);
+    }
+
+    this.xfunction = function(positions) {
+      return function(d) {
+          return blockWidth * positions[d];
+      };
+    }
+  }
+
   var renderPartition = function(p, blockWidth, blockHeight, group) {
     var elements = p.domain();
     var indexes = p.indexes();
@@ -207,7 +228,8 @@ define([], function() {
         });
 
     var lineselect = group.selectAll('line');
-    appendLine(lineselect.data(indexes).enter(), blockWidth, blockHeight);
+    var renderer = new PartitionRenderer(blockWidth, blockHeight);
+    renderer.appendLine(lineselect.data(indexes).enter());
 
     var positions = {};
 
@@ -227,9 +249,7 @@ define([], function() {
     var elementsselect = group.selectAll('svg');
     elementsselect.data(elements)
       .enter().append('svg')
-        .attr('x', function(d) {
-          return blockWidth * positions[d];
-        })
+        .attr('x', renderer.xfunction(positions))
         .attr('y', 0)
         .attr('width', blockWidth)
         .attr('height', blockHeight)
@@ -241,15 +261,15 @@ define([], function() {
             .attr('y', '50%')
             .style('dominant-baseline', 'central');
 
-    return new RenderedPartition(group, blockWidth, blockHeight);
+    return new RenderedPartition(group, renderer);
   };
 
-  function RenderedPartition(group, blockWidth, blockHeight) {
-    
+  function RenderedPartition(group, renderer) {
+
     this.transitionToPartition = function(newElements, newIndexes) {
       var lineselect = group.selectAll('line.cellseparator')
         .data(newIndexes, function(d) { return d; });
-      appendLine(lineselect.enter(), blockWidth, blockHeight)
+      renderer.appendLine(lineselect.enter())
         .style('opacity', 0)
         .transition()
         .duration(1000)
@@ -261,7 +281,7 @@ define([], function() {
         .each("end", function() {
           d3.select(this).remove();
         });
-        
+
       var newPositions = {};
       for (var i = 0; i < newElements.length; i++) {
         var e = newElements[i];
@@ -270,9 +290,7 @@ define([], function() {
       group.selectAll('.elementholder')
         .transition()
         .duration(1000)
-        .attr('x', function(d) {
-          return blockWidth * newPositions[d];
-        });
+        .attr('x', renderer.xfunction(newPositions));
     }
   }
 

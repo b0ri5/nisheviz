@@ -14,4 +14,11 @@ require(['d3', 'nishe', 'nisheviz'], function(d3, nishe, nisheviz) {
   var dims = nisheviz.partitionBlockDimensions(p.domain(), svg);
   var rendered = nisheviz.renderPartition(p, dims.width, dims.height, group);
   rendered.transitionToPartition(['c', 'b', 'a'], [1]);
+  d3.select("body").on("keydown", function() {
+    if (d3.event.keyIdentifier == "Left") {
+      rendered.transitionToPartition(['c', 'b', 'a'], [1]);
+    } else {
+      rendered.transitionToPartition(['a', 'c', 'b'], [1, 2]);
+    }
+  });
 });

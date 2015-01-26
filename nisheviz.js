@@ -294,11 +294,16 @@ define([], function() {
     }
   }
 
+  var renderGraph = function(g, group) {
+
+  };
+
   return {
     isChooseActiveIndex: isChooseActiveIndex,
     isRefineStart: isRefineStart,
     next: next,
     renderPartition: renderPartition,
-    partitionBlockDimensions: partitionBlockDimensions
+    partitionBlockDimensions: partitionBlockDimensions,
+    renderGraph: renderGraph
   };
 });

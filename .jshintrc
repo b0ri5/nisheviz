@@ -8,6 +8,9 @@
     // debugging
     "console": false,
 
+    // d3js
+    "d3": false,
+
     // mocha
     "describe": false,
     "it": false,
@@ -18,10 +21,7 @@
 
     // requirejs
     "define": false,
-    "require": false,
-
-    // svg.js
-    "SVG": false
+    "require": false
   },
   "immed": true,
   "latedef": true,

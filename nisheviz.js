@@ -142,7 +142,7 @@ define([], function() {
 
   var populateUnseenDimensions = function(elements, svg) {
     var unseen = [];
-    for (var i = 0 ; i < elements.length; i++) {
+    for (var i = 0; i < elements.length; i++) {
       var e = elements[i];
       if (!elementDimensions[e]) {
         unseen.push(e);
@@ -155,7 +155,7 @@ define([], function() {
       .enter().append('text')
         .text(function(d) { return d; });
 
-    texts.each(function (d) {
+    texts.each(function(d) {
       var bbox = this.getBBox();
       elementDimensions[d] = {width: bbox.width, height: bbox.height};
     });
@@ -178,19 +178,6 @@ define([], function() {
     return {width: blockWidth * 1.818, height: blockHeight * 1.1};
   };
 
-  var appendLine = function(enter, blockWidth, blockHeight) {
-    var multiplyByBlockWidth = function(d) {
-      return blockWidth * d;
-    };
-    return enter.append('line')
-        .attr('y1', 0)
-        .attr('y2', blockHeight)
-        .attr('x1', multiplyByBlockWidth)
-        .attr('x2', multiplyByBlockWidth)
-        .style('stroke', 'black')
-        .classed('cellseparator', true);
-  };
-
   function PartitionRenderer(blockWidth, blockHeight) {
     this.appendLine = function(enter) {
       var multiplyByBlockWidth = function(d) {
@@ -203,13 +190,13 @@ define([], function() {
           .attr('x2', multiplyByBlockWidth)
           .style('stroke', 'black')
           .classed('cellseparator', true);
-    }
+    };
 
     this.xfunction = function(positions) {
       return function(d) {
-          return blockWidth * positions[d];
+        return blockWidth * positions[d];
       };
-    }
+    };
   }
 
   var renderPartition = function(p, blockWidth, blockHeight, group) {
@@ -278,9 +265,9 @@ define([], function() {
         .transition()
         .duration(1000)
         .style('opacity', 0)
-        .each("end", function() {
-          d3.select(this).remove();
-        });
+        .each('end', function() {
+            d3.select(this).remove();
+          });
 
       var newPositions = {};
       for (var i = 0; i < newElements.length; i++) {
@@ -291,7 +278,7 @@ define([], function() {
         .transition()
         .duration(1000)
         .attr('x', renderer.xfunction(newPositions));
-    }
+    };
   }
 
   var renderGraph = function(g, group) {

@@ -281,8 +281,51 @@ define([], function() {
     };
   }
 
-  var renderGraph = function(g, group) {
+  var renderGraph = function(g, top) {
+    var vertexes = g.vertexes();
+    var vertexToNode = {};
+    var nodes = [];
+    for (var i = 0; i < vertexes.length; i++) {
+      var v = vertexes[i];
+      var node = {v: v};
+      nodes.push(node);
+      vertexToNode[v] = node;
+    }
+    var links = [];
+    for (var i = 0; i < vertexes.length; i++) {
+      var u = vertexes[i];
+      var nbhd = g.nbhd(u);
+      for (var j = 0; j < nbhd.length; j++) {
+        var v = nbhd[j];
+        links.push({source: vertexToNode[u], target: vertexToNode[v]});
+      }
+    }
+    var circles = top.selectAll('circle')
+        .data(nodes)
+      .enter().append('circle')
+        .attr("r", 5);
+    var lines = top.selectAll('line')
+        .data(links)
+      .enter().append('line')
+        .style('stroke', 'black');
+    var tick = function() {
+      lines.attr("x1", function(d) { return d.source.x; })
+          .attr("y1", function(d) { return d.source.y; })
+          .attr("x2", function(d) { return d.target.x; })
+          .attr("y2", function(d) { return d.target.y; });
 
+      circles.attr("cx", function(d) { return d.x; })
+          .attr("cy", function(d) { return d.y; });
+    }
+    var force = d3.layout.force()
+        .size([300, 300])
+        .nodes(nodes)
+        .links(links)
+        .linkDistance(30)
+        .charge(-60)
+        .on("tick", tick);
+    circles.call(force.drag);
+    force.start();
   };
 
   return {

@@ -321,8 +321,8 @@ define([], function() {
         .size([300, 300])
         .nodes(nodes)
         .links(links)
-        .linkDistance(30)
-        .charge(-60)
+        .linkDistance(1)
+        .charge(-1000)
         .on("tick", tick);
     circles.call(force.drag);
     force.start();

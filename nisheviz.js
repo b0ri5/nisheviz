@@ -300,10 +300,19 @@ define([], function() {
         links.push({source: vertexToNode[u], target: vertexToNode[v]});
       }
     }
+    // TODO: Create a group to hold the circle and text.
+    // TOOD: Create a clipPath in the defs that mimics each circle
+    //   http://tutorials.jenkov.com/svg/clip-path.html
+    // update the groups and the defs on tick()
+    var vertexGroups = top.selectAll('g')
+        .data(nodes)
+      .enter().append('g');
     var circles = top.selectAll('circle')
         .data(nodes)
       .enter().append('circle')
-        .attr("r", 5);
+        .attr("r", 5)
+        .style('fill', 'none')
+        .style('stroke', 'black');
     var lines = top.selectAll('line')
         .data(links)
       .enter().append('line')

@@ -297,21 +297,25 @@ define([], function() {
     var vertexes = g.vertexes();
     var vertexToNode = {};
     var nodes = [];
-    for (var i = 0; i < vertexes.length; i++) {
-      var v = vertexes[i];
-      var node = {v: v};
-      nodes.push(node);
-      vertexToNode[v] = node;
-    }
-    var links = [];
-    for (var i = 0; i < vertexes.length; i++) {
-      var u = vertexes[i];
-      var nbhd = g.nbhd(u);
-      for (var j = 0; j < nbhd.length; j++) {
-        var v = nbhd[j];
-        links.push({source: vertexToNode[u], target: vertexToNode[v]});
+    (function() {
+      for (var i = 0; i < vertexes.length; i++) {
+        var v = vertexes[i];
+        var node = {v: v};
+        nodes.push(node);
+        vertexToNode[v] = node;
       }
-    }
+    })();
+    var links = [];
+    (function() {
+      for (var i = 0; i < vertexes.length; i++) {
+        var u = vertexes[i];
+        var nbhd = g.nbhd(u);
+        for (var j = 0; j < nbhd.length; j++) {
+          var v = nbhd[j];
+          links.push({source: vertexToNode[u], target: vertexToNode[v]});
+        }
+      }
+    })();
     var lines = top.selectAll('line')
         .data(links)
       .enter().append('line')
@@ -320,7 +324,7 @@ define([], function() {
         .data(nodes)
       .enter().append('g');
     vertexGroups.append('circle')
-        .attr("r", radius)
+        .attr('r', radius)
         .style('fill', 'white')
         .style('stroke', 'black');
     vertexGroups.append('text')
@@ -331,14 +335,14 @@ define([], function() {
         .style('dominant-baseline', 'middle');
 
     var tick = function() {
-      lines.attr("x1", function(d) { return d.source.x; })
-          .attr("y1", function(d) { return d.source.y; })
-          .attr("x2", function(d) { return d.target.x; })
-          .attr("y2", function(d) { return d.target.y; });
-      vertexGroups.attr("transform", function(d) {
-        return "translate(" + d.x + "," + d.y + ")";
+      lines.attr('x1', function(d) { return d.source.x; })
+          .attr('y1', function(d) { return d.source.y; })
+          .attr('x2', function(d) { return d.target.x; })
+          .attr('y2', function(d) { return d.target.y; });
+      vertexGroups.attr('transform', function(d) {
+        return 'translate(' + d.x + ',' + d.y + ')';
       });
-    }
+    };
     var force = d3.layout.force()
         .size([width, height])
         .nodes(nodes)
@@ -347,7 +351,7 @@ define([], function() {
         .friction(0.9)
         .charge(-90)
         .linkStrength(0.02)
-        .on("tick", tick);
+        .on('tick', tick);
     vertexGroups.call(force.drag);
     force.start();
   };

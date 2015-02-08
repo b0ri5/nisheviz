@@ -199,6 +199,18 @@ define([], function() {
     };
   }
 
+  var graphVertexRadius = function(elements, svg) {
+    var maxDim = 0;
+    populateUnseenDimensions(elements, svg);
+    for (var i = 0; i < elements.length; i++) {
+      var e = elements[i];
+      var dims = elementDimensions[e];
+      maxDim = Math.max(maxDim, Math.sqrt(
+          dims.width * dims.width + dims.height * dims.height));
+    }
+    return (maxDim / 2) * 1.1;
+  };
+
   var renderPartition = function(p, blockWidth, blockHeight, group) {
     var elements = p.domain();
     var indexes = p.indexes();
@@ -281,7 +293,7 @@ define([], function() {
     };
   }
 
-  var renderGraph = function(g, top) {
+  var renderGraph = function(g, radius, width, height, top) {
     var vertexes = g.vertexes();
     var vertexToNode = {};
     var nodes = [];
@@ -304,36 +316,45 @@ define([], function() {
     // TOOD: Create a clipPath in the defs that mimics each circle
     //   http://tutorials.jenkov.com/svg/clip-path.html
     // update the groups and the defs on tick()
-    var vertexGroups = top.selectAll('g')
-        .data(nodes)
-      .enter().append('g');
-    var circles = top.selectAll('circle')
-        .data(nodes)
-      .enter().append('circle')
-        .attr("r", 5)
-        .style('fill', 'none')
-        .style('stroke', 'black');
     var lines = top.selectAll('line')
         .data(links)
       .enter().append('line')
         .style('stroke', 'black');
+    var vertexGroups = top.selectAll('g')
+        .data(nodes)
+      .enter().append('g');
+    vertexGroups.append('circle')
+        .attr("r", radius)
+        .style('fill', 'white')
+        .style('stroke', 'black');
+    vertexGroups.append('text')
+        .text(function(d) {
+          return d.v;
+        })
+        .style('text-anchor', 'middle')
+        .style('dominant-baseline', 'middle');
+
     var tick = function() {
       lines.attr("x1", function(d) { return d.source.x; })
           .attr("y1", function(d) { return d.source.y; })
           .attr("x2", function(d) { return d.target.x; })
           .attr("y2", function(d) { return d.target.y; });
-
-      circles.attr("cx", function(d) { return d.x; })
-          .attr("cy", function(d) { return d.y; });
+      vertexGroups.attr("transform", function(d) {
+        return "translate(" + d.x + "," + d.y + ")";
+      });
+      //circles.attr("cx", function(d) { return d.x; })
+      //    .attr("cy", function(d) { return d.y; });
     }
     var force = d3.layout.force()
-        .size([300, 300])
+        .size([width, height])
         .nodes(nodes)
         .links(links)
-        .linkDistance(1)
-        .charge(-1000)
+        .linkDistance(4 * radius)
+        .friction(0.9)
+        .charge(-90)
+        .linkStrength(0.02)
         .on("tick", tick);
-    circles.call(force.drag);
+    vertexGroups.call(force.drag);
     force.start();
   };
 
@@ -343,6 +364,7 @@ define([], function() {
     next: next,
     renderPartition: renderPartition,
     partitionBlockDimensions: partitionBlockDimensions,
-    renderGraph: renderGraph
+    renderGraph: renderGraph,
+    graphVertexRadius: graphVertexRadius
   };
 });

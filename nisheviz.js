@@ -295,6 +295,9 @@ define([], function() {
     };
 
     this.highlightElement = function(e, color) {
+      if (!group.select('#highlight-element-' + e).empty()) {
+        return;
+      }
       // TODO: keep track of where each element is explicitly
       var index = p.domain().indexOf(p.image(e));
       var pos = index + p.cell(index).indexOf(e);
@@ -320,12 +323,31 @@ define([], function() {
           });
     };
 
-    this.highlightIndex = function(i) {
-
+    this.highlightIndex = function(i, color) {
+      if (!group.select('#highlight-index-' + i).empty()) {
+        return;
+      }
+      var cell = p.cell(i);
+      group.insert('rect', ':first-child')
+        .attr('id', 'highlight-index-' + i)
+        .attr('x', renderer.blockWidth * i)
+        .attr('width', renderer.blockWidth * cell.length)
+        .attr('height', renderer.blockHeight)
+        .style('fill', color)
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .style('opacity', 0.382);
     };
 
-    this.unhighlightIndex = function(e) {
-
+    this.unhighlightIndex = function(i) {
+      group.select('#highlight-index-' + i)
+        .transition()
+        .duration(1000)
+        .style('opacity', 0)
+        .each('end', function() {
+            d3.select(this).remove();
+          });
     };
   }
 

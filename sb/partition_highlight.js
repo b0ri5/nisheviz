@@ -37,12 +37,14 @@ require(['d3', 'nishe', 'nisheviz'], function(d3, nishe, nisheviz) {
       var index = +key;
       if (indexes.indexOf(index) != -1) {
         console.log('Highlighting index ' + index);
+        rendered.highlightIndex(index, 'green');
       }
     } else if (prevkey == "j") {
       var indexes = p.indexes();
       var index = +key;
       if (indexes.indexOf(index) != -1) {
         console.log('Unhighlighting index ' + index);
+        rendered.unhighlightIndex(index);
       }
     }
     prevkey = key;

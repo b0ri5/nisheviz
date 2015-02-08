@@ -179,6 +179,8 @@ define([], function() {
   };
 
   function PartitionRenderer(blockWidth, blockHeight) {
+    this.blockWidth = blockWidth;
+    this.blockHeight = blockHeight;
     this.appendLine = function(enter) {
       var multiplyByBlockWidth = function(d) {
         return blockWidth * d;
@@ -260,10 +262,10 @@ define([], function() {
             .attr('y', '50%')
             .style('dominant-baseline', 'central');
 
-    return new RenderedPartition(group, renderer);
+    return new RenderedPartition(p, group, renderer);
   };
 
-  function RenderedPartition(group, renderer) {
+  function RenderedPartition(p, group, renderer) {
 
     this.transitionToPartition = function(newElements, newIndexes) {
       var lineselect = group.selectAll('line.cellseparator')
@@ -292,15 +294,33 @@ define([], function() {
         .attr('x', renderer.xfunction(newPositions));
     };
 
-    this.highlightElement = function(e) {
-
-    };
-
-    this.highlightIndex = function(i) {
-
+    this.highlightElement = function(e, color) {
+      // TODO: keep track of where each element is explicitly
+      var index = p.domain().indexOf(p.image(e));
+      var pos = index + p.cell(index).indexOf(e);
+      group.insert('rect', ':first-child')
+        .attr('id', 'highlight-element-' + e)
+        .attr('x', renderer.blockWidth * pos)
+        .attr('width', renderer.blockWidth)
+        .attr('height', renderer.blockHeight)
+        .style('fill', color)
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .style('opacity', 0.382);
     };
 
     this.unhighlightElement = function(e) {
+      group.select('#highlight-element-' + e)
+        .transition()
+        .duration(1000)
+        .style('opacity', 0)
+        .each('end', function() {
+            d3.select(this).remove();
+          });
+    };
+
+    this.highlightIndex = function(i) {
 
     };
 

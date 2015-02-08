@@ -14,6 +14,7 @@ require(['d3', 'nishe', 'nisheviz'], function(d3, nishe, nisheviz) {
   var domain = p.domain();
   var dims = nisheviz.partitionBlockDimensions(domain, svg);
   var rendered = nisheviz.renderPartition(p, dims.width, dims.height, group);
+  rendered.highlightElement('b', 'blue');
   var prevkey;
   d3.select("body").on("keypress", function() {
     // e<element> highlights the element
@@ -24,10 +25,12 @@ require(['d3', 'nishe', 'nisheviz'], function(d3, nishe, nisheviz) {
     if (prevkey == "e") {
       if (domain.indexOf(key) != -1) {
         console.log('Highlighting element ' + key);
+        rendered.highlightElement(key, 'blue');
       }
     } else if (prevkey == "f") {
       if (domain.indexOf(key) != -1) {
         console.log('Unhighlighting element ' + key);
+        rendered.unhighlightElement(key);
       }
     } else if (prevkey == "i") {
       var indexes = p.indexes();

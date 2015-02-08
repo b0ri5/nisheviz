@@ -291,6 +291,22 @@ define([], function() {
         .duration(1000)
         .attr('x', renderer.xfunction(newPositions));
     };
+
+    this.highlightElement = function(e) {
+
+    };
+
+    this.highlightIndex = function(i) {
+
+    };
+
+    this.unhighlightElement = function(e) {
+
+    };
+
+    this.unhighlightIndex = function(e) {
+
+    };
   }
 
   var renderGraph = function(g, radius, width, height, top) {
@@ -355,6 +371,25 @@ define([], function() {
     vertexGroups.call(force.drag);
     force.start();
   };
+
+  function RenderedGraph() {
+
+    this.highlightVertex = function(v) {
+
+    };
+
+    this.unhighlightVertex = function(v) {
+
+    };
+
+    this.highlightEdge = function(u, v) {
+
+    };
+
+    this.unhighlightEdge = function(u, v) {
+
+    };
+  }
 
   return {
     isChooseActiveIndex: isChooseActiveIndex,

@@ -312,10 +312,6 @@ define([], function() {
         links.push({source: vertexToNode[u], target: vertexToNode[v]});
       }
     }
-    // TODO: Create a group to hold the circle and text.
-    // TOOD: Create a clipPath in the defs that mimics each circle
-    //   http://tutorials.jenkov.com/svg/clip-path.html
-    // update the groups and the defs on tick()
     var lines = top.selectAll('line')
         .data(links)
       .enter().append('line')
@@ -342,8 +338,6 @@ define([], function() {
       vertexGroups.attr("transform", function(d) {
         return "translate(" + d.x + "," + d.y + ")";
       });
-      //circles.attr("cx", function(d) { return d.x; })
-      //    .attr("cy", function(d) { return d.y; });
     }
     var force = d3.layout.force()
         .size([width, height])

@@ -412,6 +412,7 @@ define([], function() {
         .on('tick', tick);
     vertexGroups.call(force.drag);
     force.start();
+    return new RenderedGraph();
   };
 
   function RenderedGraph() {

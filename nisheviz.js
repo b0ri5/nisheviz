@@ -213,6 +213,12 @@ define([], function() {
     return (maxDim / 2) * 1.1;
   };
 
+  var defaults = {
+    highlightElementDuration: 1000,
+    highlightIndexDuration: 1000,
+    highlightVertexDuration: 1000
+  };
+
   var renderPartition = function(p, blockWidth, blockHeight, group) {
     var elements = p.domain();
     var indexes = p.indexes();
@@ -294,17 +300,16 @@ define([], function() {
         .attr('x', renderer.xfunction(newPositions));
     };
 
+    var elementToHighlight = {};
+
     this.highlightElement = function(e, color, duration) {
-      if (!group.select('#highlight-element-' + e).empty()) {
-        return;
-      }
-      duration = 1000 || duration;
+      duration = duration || defaults.highlightElementDuration;
       // TODO: keep track of where each element is explicitly
       var index = p.domain().indexOf(p.image(e));
       var pos = index + p.cell(index).indexOf(e);
-      group.insert('rect', ':first-child')
-        .attr('id', 'highlight-element-' + e)
-        .attr('x', renderer.blockWidth * pos)
+      var highlight = elementToHighlight[e] || group.insert('rect', ':first-child');
+      elementToHighlight[e] = highlight;
+      highlight.attr('x', renderer.blockWidth * pos)
         .attr('width', renderer.blockWidth)
         .attr('height', renderer.blockHeight)
         .style('fill', color)
@@ -314,20 +319,25 @@ define([], function() {
         .style('opacity', 0.382);
     };
 
-    this.unhighlightElement = function(e) {
-      group.select('#highlight-element-' + e)
-        .transition()
-        .duration(1000)
+    this.unhighlightElement = function(e, duration) {
+      duration = duration || defaults.highlightElementDuration;
+      var highlight = elementToHighlight[e];
+      if (!highlight) {
+        return;
+      }
+      highlight.transition()
+        .duration(duration)
         .style('opacity', 0)
         .each('end', function() {
             d3.select(this).remove();
+            elementToHighlight[e] = undefined;
           });
     };
 
     var indexToHighlight = {};
 
     this.highlightIndex = function(i, color, duration) {
-      duration = 1000 || duration;
+      duration = duration || defaults.highlightIndexDuration;
       var cell = p.cell(i);
       var highlight = indexToHighlight[i] || group.insert('rect', ':first-child');
       indexToHighlight[i] = highlight;
@@ -342,7 +352,7 @@ define([], function() {
     };
 
     this.unhighlightIndex = function(i, duration) {
-      duration = 1000 || duration
+      duration = duration || defaults.highlightIndexDuration;
       var highlight = indexToHighlight[i];
       if (!highlight) {
         return;
@@ -431,7 +441,7 @@ define([], function() {
     var vertexToHighlight = {};
 
     this.highlightVertex = function(v, color, duration) {
-      duration = 1000 || duration;
+      duration = duration || defaults.highlightVertexDuration;
       var highlight = vertexToHighlight[v] || d3.select(vertexToGroup[v])
         .insert('circle', ':nth-child(2)');
       vertexToHighlight[v] = highlight;
@@ -444,7 +454,7 @@ define([], function() {
     };
 
     this.unhighlightVertex = function(v, duration) {
-      duration = 1000 || duration;
+      duration = duration || defaults.highlightVertexDuration;
       var highlight = vertexToHighlight[v];
       if (!highlight) {
         return;

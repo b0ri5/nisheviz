@@ -216,7 +216,10 @@ define([], function() {
   var defaults = {
     highlightElementDuration: 1000,
     highlightIndexDuration: 1000,
-    highlightVertexDuration: 1000
+    highlightVertexDuration: 1000,
+    highlightVertexStrokeWidth: 2,
+    highlightEdgeStrokeWidth: 2,
+    highlightEdgeDuration: 1000
   };
 
   var renderPartition = function(p, blockWidth, blockHeight, group) {
@@ -397,8 +400,8 @@ define([], function() {
     var vertexGroups = top.selectAll('g')
         .data(nodes)
       .enter().append('g');
-    vertexGroups.append('circle')
-        .attr('r', radius)
+    var vertexCircles = vertexGroups.append('circle');
+    vertexCircles.attr('r', radius)
         .style('fill', 'white')
         .style('stroke', 'black');
     vertexGroups.append('text')
@@ -430,18 +433,28 @@ define([], function() {
     force.start();
 
     var vertexToGroup = {};
-    vertexGroups.each(function(d, i) {
+    vertexGroups.each(function(d) {
       vertexToGroup[d.v] = this;
     });
-    return new RenderedGraph(radius, vertexToGroup);
+    var vertexToCircle = {};
+    vertexCircles.each(function(d) {
+      vertexToCircle[d.v] = this;
+    });
+    var edgeToLine = new Map();
+    lines.each(function(d) {
+      edgeToLine[[d.source.v, d.target.v]] = this;
+      edgeToLine[[d.target.v, d.source.v]] = this;
+    });
+    return new RenderedGraph(radius, vertexToGroup, vertexToCircle, edgeToLine);
   };
 
-  function RenderedGraph(radius, vertexToGroup) {
+  function RenderedGraph(radius, vertexToGroup, vertexToCircle, edgeToLine) {
 
     var vertexToHighlight = {};
 
-    this.highlightVertex = function(v, color, duration) {
+    this.highlightVertex = function(v, color, duration, strokeWidth) {
       duration = duration || defaults.highlightVertexDuration;
+      strokeWidth = strokeWidth || defaults.highlightVertexStrokeWidth
       var highlight = vertexToHighlight[v] || d3.select(vertexToGroup[v])
         .insert('circle', ':nth-child(2)');
       vertexToHighlight[v] = highlight;
@@ -449,8 +462,12 @@ define([], function() {
         .style('fill', color)
         .style('opacity', 0)
         .transition()
-        .duration(1000)
+        .duration(duration)
         .style('opacity', 0.382);
+      d3.select(vertexToCircle[v])
+        .transition()
+        .duration(duration)
+        .style('stroke-width', strokeWidth);
     };
 
     this.unhighlightVertex = function(v, duration) {
@@ -466,10 +483,18 @@ define([], function() {
             d3.select(this).remove();
             vertexToHighlight[v] = undefined;
           });
+      d3.select(vertexToCircle[v])
+        .transition()
+        .duration(duration)
+        .style('stroke-width', 1);
     };
 
-    this.highlightEdge = function(u, v) {
-
+    this.highlightEdge = function(u, v, duration, strokeWidth) {
+      duration = duration || defaults.highlightEdgeDuration;
+      strokeWidth = strokeWidth || defaults.highlightEdgeStrokeWidth;
+      d3.select(edgeToLine[[u, v]]).transition()
+        .duration(duration)
+        .style('stroke-width', strokeWidth);
     };
 
     this.unhighlightEdge = function(u, v) {

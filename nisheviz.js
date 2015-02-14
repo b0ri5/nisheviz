@@ -294,10 +294,11 @@ define([], function() {
         .attr('x', renderer.xfunction(newPositions));
     };
 
-    this.highlightElement = function(e, color) {
+    this.highlightElement = function(e, color, duration) {
       if (!group.select('#highlight-element-' + e).empty()) {
         return;
       }
+      duration = 1000 || duration;
       // TODO: keep track of where each element is explicitly
       var index = p.domain().indexOf(p.image(e));
       var pos = index + p.cell(index).indexOf(e);
@@ -309,7 +310,7 @@ define([], function() {
         .style('fill', color)
         .style('opacity', 0)
         .transition()
-        .duration(1000)
+        .duration(duration)
         .style('opacity', 0.382);
     };
 
@@ -323,30 +324,35 @@ define([], function() {
           });
     };
 
-    this.highlightIndex = function(i, color) {
-      if (!group.select('#highlight-index-' + i).empty()) {
-        return;
-      }
+    var indexToHighlight = {};
+
+    this.highlightIndex = function(i, color, duration) {
+      duration = 1000 || duration;
       var cell = p.cell(i);
-      group.insert('rect', ':first-child')
-        .attr('id', 'highlight-index-' + i)
-        .attr('x', renderer.blockWidth * i)
+      var highlight = indexToHighlight[i] || group.insert('rect', ':first-child');
+      indexToHighlight[i] = highlight;
+      highlight.attr('x', renderer.blockWidth * i)
         .attr('width', renderer.blockWidth * cell.length)
         .attr('height', renderer.blockHeight)
         .style('fill', color)
         .style('opacity', 0)
         .transition()
-        .duration(1000)
+        .duration(duration)
         .style('opacity', 0.382);
     };
 
-    this.unhighlightIndex = function(i) {
-      group.select('#highlight-index-' + i)
-        .transition()
-        .duration(1000)
+    this.unhighlightIndex = function(i, duration) {
+      duration = 1000 || duration
+      var highlight = indexToHighlight[i];
+      if (!highlight) {
+        return;
+      }
+      highlight.transition()
+        .duration(duration)
         .style('opacity', 0)
         .each('end', function() {
             d3.select(this).remove();
+            indexToHighlight[i] = undefined;
           });
     };
   }
@@ -412,17 +418,44 @@ define([], function() {
         .on('tick', tick);
     vertexGroups.call(force.drag);
     force.start();
-    return new RenderedGraph();
+
+    var vertexToGroup = {};
+    vertexGroups.each(function(d, i) {
+      vertexToGroup[d.v] = this;
+    });
+    return new RenderedGraph(radius, vertexToGroup);
   };
 
-  function RenderedGraph() {
+  function RenderedGraph(radius, vertexToGroup) {
 
-    this.highlightVertex = function(v) {
+    var vertexToHighlight = {};
 
+    this.highlightVertex = function(v, color, duration) {
+      duration = 1000 || duration;
+      var highlight = vertexToHighlight[v] || d3.select(vertexToGroup[v])
+        .insert('circle', ':nth-child(2)');
+      vertexToHighlight[v] = highlight;
+      highlight.attr('r', radius)
+        .style('fill', color)
+        .style('opacity', 0)
+        .transition()
+        .duration(1000)
+        .style('opacity', 0.382);
     };
 
-    this.unhighlightVertex = function(v) {
-
+    this.unhighlightVertex = function(v, duration) {
+      duration = 1000 || duration;
+      var highlight = vertexToHighlight[v];
+      if (!highlight) {
+        return;
+      }
+      highlight.transition()
+        .duration(duration)
+        .style('opacity', 0)
+        .each('end', function() {
+            d3.select(this).remove();
+            vertexToHighlight[v] = undefined;
+          });
     };
 
     this.highlightEdge = function(u, v) {

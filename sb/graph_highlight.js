@@ -48,6 +48,15 @@ require(['d3', 'nishe', 'nisheviz'], function(d3, nishe, nisheviz) {
           rendered.highlightEdge(u, v);
         }
       })();
+    } else if (prevkeys[1] == "f") {
+      (function() {
+        var u = prevkeys[0];
+        var v = key;
+        if (g.nbhd(u).indexOf(v) != -1) {
+          console.log('Unhighlighting edge ' + u + ", " + v)
+          rendered.unhighlightEdge(u, v);
+        }
+      })();
     }
     prevkeys.unshift(key);
     if (prevkeys.length > 2) {
